@@ -33,7 +33,7 @@ namespace TNVED
 
             if (temp == "")
             {
-                textBox2.Text = "Hello, Мир!";
+                textBox2.Text = "Hello, hui!";
             }
             else
             {

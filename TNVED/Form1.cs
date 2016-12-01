@@ -17,30 +17,26 @@ namespace TNVED
             InitializeComponent();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
-            string temp = textBox1.Text;
+           string temp = textBox1.Text;
 
             if (temp == "")
             {
-                textBox2.Text = "Hello, hui!";
+                MessageBox.Show("Вы не ввели код ТН ВЭД!");
             }
             else
             {
-                textBox2.Text = "Hello, " +temp+ "!";
+                listBox1.Items.Add(temp);
             }
 
-        } 
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            
+        }
+
     }
 }
 

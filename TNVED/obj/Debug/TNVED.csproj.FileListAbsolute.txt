@@ -1,0 +1,11 @@
+D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.exe.config
+D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.exe
+D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.pdb
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.csprojResolveAssemblyReference.cache
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.Form1.resources
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.Properties.Resources.resources
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.csproj.GenerateResource.Cache
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.exe
+D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.pdb
+D:\Development\projects\TNVED\TNVED\bin\Debug\Codes.exe
+D:\Development\projects\TNVED\TNVED\bin\Debug\Codes.pdb

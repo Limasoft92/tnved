@@ -16,6 +16,7 @@ namespace TNVED
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            //ReadFromFile.WriteInRAM();
             Application.Run(new Form1());
         }
     }

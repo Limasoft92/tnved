@@ -20,30 +20,25 @@ namespace TNVED
         public Form1()
         {
             InitializeComponent();
-
-
             code1 = ob.WriteInRAM();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             string num = textBox1.Text;
-            //float cost = textBox2.Text;
+            string cos = textBox2.Text;
 
             if (num == "")
             {
-                /*foreach (Codes c1 in code1)
-                {
-                    listBox1.Items.Add(c1.id + "  " + c1.number);
-                }*/
-                //listBox1.Items.Add(code1[0].id + "     " + code1[1].number + "     " + code1[0].description + "     " + code1[0].unit + "     " + code1[0].tax);
-                
                 MessageBox.Show("Вы не ввели код ТН ВЭД!");
-
             }
             else if (num.Length != 10)
             {
                 MessageBox.Show("Введите 10-значный код ТН ВЭД!");
+            }
+            else if (cos == "")
+            {
+                MessageBox.Show("Вы не ввели стоимость!");
             }
             else
             {
@@ -51,8 +46,10 @@ namespace TNVED
                 {
                     if (c1.number.Contains(num))
                     {
-                        listBox1.Items.Add(c1.number + "     " + c1.description + "     " + c1.unit + "     " + c1.tax);
+                        c1.cost = (float)Convert.ToDouble(cos);
+                        listBox1.Items.Add(c1.number + "     " + c1.description + "     " + c1.unit + "     " + c1.tax + "     " + c1.cost);
                         textBox1.Text = "";
+                        textBox2.Text = "";
                     }
                     else
                     {
@@ -66,13 +63,25 @@ namespace TNVED
                 }
             }
         }
+        
+        private void listBox1_Click(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedIndex >= 0)
+            {
+                button2.Visible = true;
+            }
+            else
+            {
+                button2.Visible = false;
+            }
+        }
     }
+
 
     public class ReadFromFile
     {
         public  List<Codes> WriteInRAM()
         {
-
             string[] lines = System.IO.File.ReadAllLines(@"D:\Development\CODES\codes_all.txt");
             string temp = "", temp2 = "", temp3 = "", temp4 = "";
             char[] symbol = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
@@ -99,34 +108,22 @@ namespace TNVED
                     if ((last - first) == 9)
                     {
                         obj.id = i;
-                        //Console.WriteLine(i);
                         obj.number = temp;
-                        //Console.WriteLine(temp);
                         temp2 = temp2.Substring(15, 31);
                         obj.description = temp2;
-                        //Console.WriteLine(temp2);
                         temp3 = temp3.Substring(49, 6);
                         obj.unit = temp3;
-                        //Console.WriteLine(temp3);
                         temp4 = temp4.Substring(56, 18);
                         obj.tax = temp4;
-                        //Console.WriteLine(temp4);
                         code.Add(obj);
                         i++;
                     }
                 }
             }
-            
             return code;
-            /*foreach (Codes c in code)
-            {
-                Console.WriteLine(c.id + "  " + c.number + "  " + c.description + "  " + c.unit + "  " + c.tax);
-            }*/
-
-            //Console.WriteLine("Press any key to exit.");
-            //System.Console.ReadKey();
         }
     }
+
 
     public class Codes
     {
@@ -135,6 +132,7 @@ namespace TNVED
         public string description;
         public string unit;
         public string tax;
+        public float cost;
     }
 }
 

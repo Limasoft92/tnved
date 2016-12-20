@@ -16,6 +16,8 @@ namespace TNVED
         Codes obj1 = new Codes();
         List<Codes> code1 = new List<Codes>();
         int z = 0;
+        List<Codes> code2 = new List<Codes>();
+        BindingSource source = new BindingSource();
 
         public Form1()
         {
@@ -75,6 +77,59 @@ namespace TNVED
                 button2.Visible = false;
             }
         }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            int ind = 0;
+            bool yes = false;
+            //string io = dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString();
+            int ec = e.ColumnIndex;
+            int er = e.RowIndex;
+            foreach (Codes c1 in code1)
+            {
+                if (dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString() != null)
+                {
+                    if (c1.number.Equals(dataGridView1[e.ColumnIndex, e.RowIndex].Value.ToString()))
+                    {
+                        yes = true;
+                        ind = c1.id;
+                        break;
+                    }
+                }
+            }
+            if (yes) {
+                code2[e.RowIndex] = code1[ind];
+                code2[e.RowIndex].id = e.RowIndex + 1;
+                code2.Add(new Codes());
+                source.ResetBindings(false);
+                dataGridView1[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Green;
+            }
+            else
+            {
+                dataGridView1[e.ColumnIndex, e.RowIndex].Style.BackColor = Color.Red;
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            source.DataSource = code2;
+            dataGridView1.DataSource = source;
+            code2.Add(new Codes());
+            source.ResetBindings(false);
+            dataGridView1.AllowUserToAddRows = false;
+            dataGridView1.Columns[0].ReadOnly = true;
+            dataGridView1.Columns[2].ReadOnly = true;
+            dataGridView1.Columns[3].ReadOnly = true;
+            dataGridView1.Columns[4].ReadOnly = true;
+            dataGridView1.Columns[0].Width = 40;
+            dataGridView1.Columns[1].Width = 100;
+            dataGridView1.Columns[2].Width = 316;
+            dataGridView1.Columns[3].Width = 60;
+            dataGridView1.Columns[4].Width = 100;
+            dataGridView1.Columns[5].Width = 100;
+
+            
+        }
     }
 
 
@@ -127,12 +182,28 @@ namespace TNVED
 
     public class Codes
     {
-        public int id;
-        public string number;
-        public string description;
-        public string unit;
-        public string tax;
-        public float cost;
+        [System.ComponentModel.DisplayName("№")]
+        public int id {get; set;}
+        [System.ComponentModel.DisplayName("Код ТН ВЭД")]
+        public string number {get; set;}
+        [System.ComponentModel.DisplayName("Описание")]
+        public string description {get; set;}
+        [System.ComponentModel.DisplayName("Ед.изм.")]
+        public string unit {get; set;}
+        [System.ComponentModel.DisplayName("Пошлина, %")]
+        public string tax {get; set;}
+        [System.ComponentModel.DisplayName("Стоимость")]
+        public float cost {get; set;}
+
+        public Codes() 
+        {
+            id = 0;
+            number = "";
+            description = "";
+            unit = "";
+            tax = "";
+            cost = 0;
+        }
     }
 }
 

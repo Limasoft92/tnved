@@ -38,6 +38,10 @@
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.codesBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.codesBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -82,7 +86,7 @@
             this.listBox1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.listBox1.Location = new System.Drawing.Point(46, 121);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(435, 316);
+            this.listBox1.Size = new System.Drawing.Size(468, 56);
             this.listBox1.TabIndex = 4;
             this.listBox1.Click += new System.EventHandler(this.listBox1_Click);
             // 
@@ -112,11 +116,25 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Visible = false;
             // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(12, 187);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.Size = new System.Drawing.Size(760, 363);
+            this.dataGridView1.TabIndex = 7;
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            // 
+            // codesBindingSource
+            // 
+            this.codesBindingSource.DataSource = typeof(TNVED.Codes);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 562);
+            this.ClientSize = new System.Drawing.Size(784, 562);
+            this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox2);
@@ -128,6 +146,9 @@
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MyProgram";
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.codesBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,6 +165,8 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.BindingSource codesBindingSource;
+        private System.Windows.Forms.DataGridView dataGridView1;
     }
 }
 

@@ -112,7 +112,7 @@ namespace TNVED
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            source.DataSource = code2;
+            source.DataSource = code1;
             dataGridView1.DataSource = source;
             code2.Add(new Codes());
             source.ResetBindings(false);
@@ -138,40 +138,93 @@ namespace TNVED
         public  List<Codes> WriteInRAM()
         {
             string[] lines = System.IO.File.ReadAllLines(@"D:\Development\CODES\codes_all.txt");
-            string temp = "", temp2 = "", temp3 = "", temp4 = "";
+            string temp = "", temp2 = "", temp3 = "", temp4 = "", temp5 = "";
             char[] symbol = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-            int first, last, i = 0;
+            char[] array;
+            int first=0, last=0, i = 0;
+            int isLet = 0;
 
             List<Codes> code = new List<Codes>();
+            Codes obj2 = new Codes();
 
             foreach (string line in lines)
             {
-                Codes obj = new Codes();
                 if (line.Length > 70)
                 {
-                    first = 0;
-                    last = 0;
-                    temp = line.Remove(5, 1);
-                    temp2 = temp;
-                    temp3 = temp;
-                    temp4 = temp;
-                    temp = temp.Remove(7, 1);
-                    temp = temp.Remove(10, 1);
-                    temp = temp.Substring(1, 10);
-                    first = temp.IndexOfAny(symbol);
-                    last = temp.LastIndexOfAny(symbol);
-                    if ((last - first) == 9)
+                    Codes obj = new Codes();
+                    if (isLet == 3)
                     {
-                        obj.id = i;
-                        obj.number = temp;
-                        temp2 = temp2.Substring(15, 31);
-                        obj.description = temp2;
-                        temp3 = temp3.Substring(49, 6);
-                        obj.unit = temp3;
-                        temp4 = temp4.Substring(56, 18);
-                        obj.tax = temp4;
-                        code.Add(obj);
-                        i++;
+                        first = 0;
+                        last = 0;
+                        temp = line.Remove(5, 1);
+                        temp = temp.Remove(7, 1);
+                        temp = temp.Remove(10, 1);
+                        temp2 = temp;
+                        temp3 = temp;
+                        temp4 = temp;
+                        temp = temp.Substring(1, 10);
+                        first = temp.IndexOfAny(symbol);
+                        last = temp.LastIndexOfAny(symbol);
+                        if ((last - first) != 9)                        
+                        {
+                            obj2.tax = temp5 + line.Substring(56, 17);
+                            code.Add(obj2);
+                            i++;
+                            isLet = 0;
+                        }
+                        else
+                        {
+                            isLet = 0;
+                        }
+                    }
+                    if (isLet == 0)
+                    {
+                        first = 0;
+                        last = 0;
+                        temp = line.Remove(5, 1);
+                        temp = temp.Remove(7, 1);
+                        temp = temp.Remove(10, 1);
+                        temp2 = temp;
+                        temp3 = temp;
+                        temp4 = temp;
+                        temp = temp.Substring(1, 10);
+                        first = temp.IndexOfAny(symbol);
+                        last = temp.LastIndexOfAny(symbol);
+                        if ((last - first) == 9)                    //если обнаружен 10-значный код
+                        {
+                            obj.id = i;
+                            obj.number = temp;
+                            temp2 = temp2.Substring(15, 31);
+                            obj.description = temp2;
+                            temp3 = temp3.Substring(49, 6);
+                            obj.unit = temp3;
+                            temp4 = temp4.Substring(56, 16);
+                            array = temp4.ToCharArray();
+                            for (int j = 0; j < array.Length; j++)      //проверка на наличие букв в строке с пошлиной
+                            {
+                                if (char.IsLetter(array[j]))
+                                {
+                                    isLet = 1;
+                                    break;
+                                }
+                            }
+                            obj.tax = temp4;
+                            obj2 = obj;
+                            if (isLet == 0)
+                            {
+                                code.Add(obj);
+                                i++;
+                            }
+                        } 
+                    }
+                    if (isLet == 2)
+                    {
+                        temp5 = temp4 + line.Substring(56, 18);
+                        isLet = 3;
+                    }
+                    if (isLet == 1)     //пропуск строки
+                    {
+                        isLet = 2;
                     }
                 }
             }

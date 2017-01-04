@@ -20,8 +20,7 @@ namespace TNVED
         List<Codes> code2 = new List<Codes>();
         BindingSource source = new BindingSource();
         double taxSum = 0, sum = 0, taxCost = 0, taxCostNds = 0, taxCostSum = 0, taxCostNdsSum = 0, taxCost2 = 0;
-        double nds = (double)0.18;
-        double tax1 = 0;                                    //первое число в строке
+        double nds = 0.18, convEurUsd = 1.043;
 
         public Form1()
         {
@@ -54,7 +53,7 @@ namespace TNVED
 
             foreach (Codes c1 in code1)
             {
-                if (curCell != null)                        //если текущая ячейка не равна нуля (т.е. изменена)
+                if (curCell != null)                        //если текущая ячейка не равна нулю (т.е. изменена)
                 {
                     if (c1.number.Equals(curCell))          //если код содержится в файле
                     {
@@ -98,7 +97,6 @@ namespace TNVED
 
             foreach (Codes c2 in code2)
             {
-                tax1 = 0;
                 taxCost = 0;
                 taxCostNds = 0;
                 switch (c2.type)
@@ -114,14 +112,13 @@ namespace TNVED
                     case 1:
                         sum += c2.cost;
                         taxCost = c2.cost * c2.tax1 / 100;
-                        switch (c2.tax3)
+                        if ((c2.tax3 == 1 && c2.unit2.Equals("т")) || (c2.tax3 == 1000 && c2.unit2.Equals("кг")))
                         {
-                            case 1:
-                                taxCost2 = c2.amount * c2.tax2;                 //пошлина по коду исходя из количества
-                                break;
-                            case 1000:
-                                taxCost2 = c2.amount * c2.tax2 / 1000;
-                                break;
+                            taxCost2 = c2.amount * c2.tax2 / 1000;               //пошлина по коду исходя из количества
+                        }
+                        else
+                        {
+                            taxCost2 = c2.amount * c2.tax2;
                         }
                         if (taxCost < taxCost2)
                         {
@@ -133,15 +130,59 @@ namespace TNVED
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
                     case 2:
+                        sum += c2.cost;
+                        if ((c2.tax3 == 1 && c2.unit2.Equals("т")) || (c2.tax3 == 1000 && c2.unit2.Equals("кг")))
+                        {
+                            taxCost = c2.amount * c2.tax2 / 1000;                     //пошлина по коду исходя из количества
+                        }
+                        else
+                        {
+                            taxCost = c2.amount * c2.tax2;
+                        }
+                        taxCostSum += taxCost;
+                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNdsSum += taxCostNds;
+                        taxSum += c2.cost + taxCost + taxCostNds;
                         break;
                     case 4:
+                        sum += c2.cost;
+                        if ((c2.tax3 == 1 && c2.unit2.Equals("т")) || (c2.tax3 == 1000 && c2.unit2.Equals("кг")))
+                        {
+                            taxCost = c2.amount * c2.tax2 / convEurUsd / 1000;        //пошлина по коду исходя из количества
+                        }
+                        else
+                        {
+                            taxCost = c2.amount * c2.tax2 / convEurUsd;
+                        }
+                        taxCostSum += taxCost;
+                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNdsSum += taxCostNds;
+                        taxSum += c2.cost + taxCost + taxCostNds;
+                        break;
+                    case 8:
+                        sum += c2.cost;
+                        taxCost = (c2.cost * c2.tax1 / 100) + (c2.amount * c2.tax2);
+                        taxCostSum += taxCost;
+                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNdsSum += taxCostNds;
+                        taxSum += c2.cost + taxCost + taxCostNds;
                         break;
                 }
+                if (c2.type != 0)                                                       //разблокировка поля "Количество"
+                {
+                    dataGridView1[6, eRow].ReadOnly = false;
+                    dataGridView1[6, eRow].Style.BackColor = Color.White;
+                }
+                else
+                {
+                    dataGridView1[6, eRow].ReadOnly = true;
+                    dataGridView1[6, eRow].Style.BackColor = Color.Gainsboro;
+                }
             }
-            textBox1.Text = "Стоимость груза без учёта пошлин составляет " + Convert.ToString(Math.Round(sum, 4)) + " €\r\n" +
-                "Сумма пошлины составляет " + Convert.ToString(Math.Round(taxCostSum, 4)) + " €\r\n" +
-                   "Сумма НДС составляет " + Convert.ToString(Math.Round(taxCostNdsSum, 4)) + " €\r\n" +
-                       "Стоимость груза с учётом всех пошлин составляет " + Convert.ToString(Math.Round(taxSum, 4)) + " €";
+            textBox1.Text = " Стоимость груза без учёта таможенной пошлины и НДС составляет " + Convert.ToString(Math.Round(sum, 4)) + " €\r\n" +
+                " Сумма таможенной пошлины составляет " + Convert.ToString(Math.Round(taxCostSum, 4)) + " €\r\n" +
+                   " Сумма НДС составляет " + Convert.ToString(Math.Round(taxCostNdsSum, 4)) + " €\r\n" +
+                       " Стоимость груза с учётом таможенной пошлины и НДС составляет " + Convert.ToString(Math.Round(taxSum, 4)) + " €";
             textBox2.Text = Convert.ToString(Math.Round(sum,2)) + " €";
             textBox3.Text = Convert.ToString(Math.Round(taxSum,2)) + " €";
         }
@@ -176,9 +217,32 @@ namespace TNVED
             dataGridView1.Columns[5].Width = 100;
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[5]).MaxInputLength = 15;
 
-            //dataGridView1.Columns[6].ReadOnly = true;
-            //dataGridView1.Columns[6].DefaultCellStyle.BackColor = Color.Gainsboro;
+            dataGridView1.Columns[6].ReadOnly = true;
+            dataGridView1.Columns[6].DefaultCellStyle.BackColor = Color.Gainsboro;
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[6]).MaxInputLength = 15;
+
+            dataGridView1.Columns[7].Visible = false;
+            dataGridView1.Columns[8].Visible = false;
+            dataGridView1.Columns[9].Visible = false;
+            dataGridView1.Columns[10].Visible = false;
+            dataGridView1.Columns[11].Visible = false;
+            dataGridView1.Columns[12].Visible = false;
+
+
+            //ListView colNumber = new ListView();
+            DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
+            column.HeaderText = "Колонка";
+            column.MaxDropDownItems = 5;
+            column.FlatStyle = FlatStyle.Flat;
+            column.DisplayStyleForCurrentCellOnly = true;
+
+            foreach (Codes c1 in code1)
+            {
+                column.Items.AddRange(c1.number);
+            }
+            dataGridView1.Columns.Add(column);
+
+
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)           //для исключения ошибки при вводе пустого поля
@@ -226,7 +290,6 @@ namespace TNVED
                     array = temp.ToCharArray();
                     tempRegex = Regex.Match(temp, @"\d{10,10}").Value;      //от 10 до 10 цифр последовательно
                     isDig = (tempRegex != "" ? tempRegex.Length : 0);
-
                     if (isDig != 10 && isLet >= 2 && isLet <= 4)               
                     {
                         obj2.tax += line.Substring(57, 18);
@@ -252,12 +315,13 @@ namespace TNVED
                                 obj2.type = 2;
                                 break;
                             case ("доллар"):
-                                obj2.type = 2;
-                                break;
-                            case ("плюс"):
                                 obj2.type = 4;
                                 break;
-                        } 
+                            case ("плюс"):
+                                obj2.type = 8;
+                                break;
+                        }
+                        //sw.WriteLine(tempType);
                         obj2.tax2 = Double.Parse(Regex.Replace(Regex.Match(obj2.tax, @"[0-9,]{1,}\s(евро|евр|доллар|за)").Value, @"[,]?\s(евро|евр|доллар|за)", ""));
                         obj2.currency = Regex.Replace(Regex.Match(obj2.tax, @"\b(евро|евр|доллар)").Value, @"(евр)\b", "евро");
                         obj2.tax3 = int.Parse(Regex.Replace(Regex.Match(obj2.tax, @"\s\d+\s(кг|шт|л|м2|м3|см2|см3|пару|т)").Value, @"(кг|шт|л|м2|м3|см2|см3|пару|т)", ""));
@@ -328,10 +392,10 @@ namespace TNVED
         [System.ComponentModel.DisplayName("Количество")]
         public double amount { get; set; }                          //вес, шт, л
         public double tax1 { get; set; }                            //первое число
-        public byte type { get; set; }                           //"...но не менее..."|"...евро(долларов) за..."|"...плюс..."
+        public byte type { get; set; }                              //"...но не менее..."|"...евро(долларов) за..."|"...плюс..."
         public double tax2 { get; set; }                            //второе число
         public string currency { get; set; }                        //валюта
-        public int tax3 { get; set; }                            //третье число
+        public int tax3 { get; set; }                               //третье число
         public string unit2 { get; set; }                           //Дополнительные ед.изм.
 
 

@@ -22,6 +22,8 @@ namespace TNVED
         double taxSum = 0, sum = 0, taxCost = 0, taxCostNds = 0, taxCostSum = 0, taxCostNdsSum = 0, taxCost2 = 0;
         double nds = 0.18, convEurUsd = 1.043;
 
+        DataGridViewComboBoxColumn column;
+
         public Form1()
         {
             InitializeComponent();
@@ -75,7 +77,7 @@ namespace TNVED
                 {
                     code2[eRow].Copy(code1[ind]);
                 }
-                source.ResetBindings(false);         
+                source.ResetBindings(false);
                 if (eCol == 1)                    //подсветка только столбца "Код ТН ВЭД"
                 {
                     dataGridView1[eCol, eRow].Style.BackColor = Color.LightGreen;
@@ -168,15 +170,18 @@ namespace TNVED
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
                 }
-                if (c2.type != 0)                                                       //разблокировка поля "Количество"
+                if (c2.id != 0)
                 {
-                    dataGridView1[6, eRow].ReadOnly = false;
-                    dataGridView1[6, eRow].Style.BackColor = Color.White;
-                }
-                else
-                {
-                    dataGridView1[6, eRow].ReadOnly = true;
-                    dataGridView1[6, eRow].Style.BackColor = Color.Gainsboro;
+                    if (code2[c2.id - 1].type != 0)                                                       //разблокировка поля "Количество"
+                    {
+                        dataGridView1[6, c2.id - 1].ReadOnly = false;
+                        dataGridView1[6, c2.id - 1].Style.BackColor = Color.White;
+                    }
+                    else
+                    {
+                        dataGridView1[6, c2.id - 1].ReadOnly = true;
+                        dataGridView1[6, c2.id - 1].Style.BackColor = Color.Gainsboro;
+                    }
                 }
             }
             textBox1.Text = " Стоимость груза без учёта таможенной пошлины и НДС составляет " + Convert.ToString(Math.Round(sum, 4)) + " €\r\n" +
@@ -229,12 +234,13 @@ namespace TNVED
             dataGridView1.Columns[12].Visible = false;
 
 
-            //ListView colNumber = new ListView();
-            DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
+            column = new DataGridViewComboBoxColumn();
             column.HeaderText = "Колонка";
             column.MaxDropDownItems = 5;
             column.FlatStyle = FlatStyle.Flat;
-            column.DisplayStyleForCurrentCellOnly = true;
+            //column.DisplayStyleForCurrentCellOnly = true;
+            column.DisplayIndex = 77;
+            
 
             foreach (Codes c1 in code1)
             {
@@ -250,6 +256,37 @@ namespace TNVED
             if (dataGridView1[e.ColumnIndex, e.RowIndex].Value == null)
             {
                 dataGridView1[e.ColumnIndex, e.RowIndex].Value = (double)0;
+            }
+        }
+
+        private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            if (e.ColumnIndex == column.DisplayIndex)
+            {
+                if (!this.column.Items.Contains(e.FormattedValue))
+                {
+                    column.Items.Add(e.FormattedValue);
+                }
+            }
+        }
+
+        private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (dataGridView1.CurrentCellAddress.X == column.DisplayIndex)
+            {
+                ComboBox cb = e.Control as ComboBox;
+                if (cb != null)
+                {
+                    cb.DropDownStyle = ComboBoxStyle.DropDown;
+                }
+            }
+        }
+
+        private void dataGridView1_keyPress(object sender, KeyPressEventArgs e)
+        {
+            if (dataGridView1.CurrentCell.Value.ToString() != "6")
+            {
+                MessageBox.Show("Вправьте!");
             }
         }
     }

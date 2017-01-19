@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace TNVED
 {
@@ -18,16 +19,16 @@ namespace TNVED
         Codes obj1 = new Codes();
         List<Codes> code1 = new List<Codes>();
         List<Codes> code2 = new List<Codes>();
+        public List<Codes> tCode = new List<Codes>();
+        public int k = 0, m = 0, n = 0;
         BindingSource source = new BindingSource();
         double taxSum = 0, sum = 0, taxCost = 0, taxCostNds = 0, taxCostSum = 0, taxCostNdsSum = 0, taxCost2 = 0;
-        double nds = 0.18, convEurUsd = 1.043;
-
-        DataGridViewComboBoxColumn column;
+        double convEurUsd = 1.043;
 
         public Form1()
         {
             InitializeComponent();
-            code1 = ob.WriteInRAM();
+            OpenFromFile();
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -38,14 +39,14 @@ namespace TNVED
             int eRow = e.RowIndex;
             string curCell = "";
             char[] symbol = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-            
+
             try                                            //проверка на ввод букв
             {
                 long s = Convert.ToInt64(dataGridView1[eCol, eRow].Value);
             }
             catch (System.FormatException)
             {
-                MessageBox.Show("Ввод букв не допускается! Пожалуйста, исправьте!");  
+                MessageBox.Show("Ввод букв не допускается! Пожалуйста, исправьте!");
             }
 
             if (dataGridView1[eCol, eRow].Value != null)
@@ -66,11 +67,12 @@ namespace TNVED
                 }
             }
 
-            if (yes) {                                      //если код содержится в файле
+            if (yes)
+            {                                      //если код содержится в файле
                 if (code2[eRow].id == 0)
                 {
                     code2[eRow].Copy(code1[ind]);
-                    code2[eRow].id = code2.Count;                  
+                    code2[eRow].id = code2.Count;
                     code2.Add(new Codes());
                 }
                 else
@@ -107,7 +109,7 @@ namespace TNVED
                         sum += c2.cost;                                         //общая стоимость груза без пошлин
                         taxCost = c2.cost * c2.tax1 / 100;                      //пошлина по коду
                         taxCostSum += taxCost;                                  //сумма пошлины
-                        taxCostNds = (c2.cost + taxCost) * nds;                 //НДС по коду
+                        taxCostNds = (c2.cost + taxCost) * c2.nds / 100;                 //НДС по коду
                         taxCostNdsSum += taxCostNds;                            //сумма НДС
                         taxSum += c2.cost + taxCost + taxCostNds;               //общая стоимость с учётом всех пошлин
                         break;
@@ -127,7 +129,7 @@ namespace TNVED
                             taxCost = taxCost2;
                         }
                         taxCostSum += taxCost;
-                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNds = (c2.cost + taxCost) * c2.nds / 100;
                         taxCostNdsSum += taxCostNds;
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
@@ -142,7 +144,7 @@ namespace TNVED
                             taxCost = c2.amount * c2.tax2;
                         }
                         taxCostSum += taxCost;
-                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNds = (c2.cost + taxCost) * c2.nds / 100;
                         taxCostNdsSum += taxCostNds;
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
@@ -157,7 +159,7 @@ namespace TNVED
                             taxCost = c2.amount * c2.tax2 / convEurUsd;
                         }
                         taxCostSum += taxCost;
-                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNds = (c2.cost + taxCost) * c2.nds / 100;
                         taxCostNdsSum += taxCostNds;
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
@@ -165,7 +167,7 @@ namespace TNVED
                         sum += c2.cost;
                         taxCost = (c2.cost * c2.tax1 / 100) + (c2.amount * c2.tax2);
                         taxCostSum += taxCost;
-                        taxCostNds = (c2.cost + taxCost) * nds;
+                        taxCostNds = (c2.cost + taxCost) * c2.nds / 100;
                         taxCostNdsSum += taxCostNds;
                         taxSum += c2.cost + taxCost + taxCostNds;
                         break;
@@ -184,13 +186,13 @@ namespace TNVED
                     }
                 }
             }
-            textBox1.Text = " Стоимость груза без учёта таможенных платежей " + Convert.ToString(Math.Round(sum, 4)) + " €\r\n" +
-                " Сумма таможенной пошлины " + Convert.ToString(Math.Round(taxCostSum, 4)) + " €\r\n" +
-                   " Сумма налога на добавленную стоимость (НДС) " + Convert.ToString(Math.Round(taxCostNdsSum, 4)) + " €\r\n" +
-                     " Окончательная сумма таможенных платежей " + Convert.ToString(Math.Round((taxCostSum + taxCostNdsSum), 4)) + " €\r\n" +
-                       " Стоимость груза с учётом таможенных платежей " + Convert.ToString(Math.Round(taxSum, 4)) + " €";
-            textBox2.Text = Convert.ToString(Math.Round(sum,2)) + " €";
-            textBox3.Text = Convert.ToString(Math.Round(taxSum,2)) + " €";
+            label4.Text = " Стоимость груза без учёта таможенных платежей " + Convert.ToString(Math.Round(sum, 4)) + " €\r\n" +
+                " Сумма таможенной пошлины составляет " + Convert.ToString(Math.Round(taxCostSum, 4)) + " €\r\n" +
+                   " Сумма НДС составляет " + Convert.ToString(Math.Round(taxCostNdsSum, 4)) + " €\r\n" +
+                       " Окончательная сумма таможенных платежей " + Convert.ToString(Math.Round((taxCostSum + taxCostNdsSum), 4)) + " €\r\n" +
+                           " Стоимость груза с учётом всех таможенных платежей " + Convert.ToString(Math.Round(taxSum, 4)) + " €";
+            label5.Text = Convert.ToString(Math.Round(sum, 2)) + " €";
+            label6.Text = Convert.ToString(Math.Round(taxSum, 2)) + " €";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -209,7 +211,7 @@ namespace TNVED
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[1]).MaxInputLength = 10;
 
             dataGridView1.Columns[2].ReadOnly = true;
-            dataGridView1.Columns[2].Width = 320;
+            dataGridView1.Columns[2].Width = 415;
             dataGridView1.Columns[2].DefaultCellStyle.BackColor = Color.Gainsboro;
 
             dataGridView1.Columns[3].ReadOnly = true;
@@ -234,22 +236,10 @@ namespace TNVED
             dataGridView1.Columns[11].Visible = false;
             dataGridView1.Columns[12].Visible = false;
 
+            dataGridView1.Columns[13].Width = 60;
+            dataGridView1.Columns[13].DefaultCellStyle.BackColor = Color.Gainsboro;
 
-            //column = new DataGridViewComboBoxColumn();
-            //column.HeaderText = "Колонка";
-            //column.MaxDropDownItems = 5;
-            //column.FlatStyle = FlatStyle.Flat;
-            ////column.DisplayStyleForCurrentCellOnly = true;
-            //column.DisplayIndex = 77;
-            
-
-            //foreach (Codes c1 in code1)
-            //{
-            //    column.Items.AddRange(c1.number);
-            //}
-            //dataGridView1.Columns.Add(column);
-
-
+            labelHelp.Text = (code1.Count() < 10000) ? "Обновите базу данных": "";                      //подсказка (краткая форма if)
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)           //для исключения ошибки при вводе пустого поля
@@ -260,60 +250,137 @@ namespace TNVED
             }
         }
 
-        //private void dataGridView1_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
-        //{
-        //    if (e.ColumnIndex == column.DisplayIndex)
-        //    {
-        //        if (!this.column.Items.Contains(e.FormattedValue))
-        //        {
-        //            column.Items.Add(e.FormattedValue);
-        //        }
-        //    }
-        //}
+        private void MenuFileUpdate_Click(object sender, EventArgs e)                                   //Контекстное меню
+        {
+            OpenFileDialog dlg = new OpenFileDialog();
+            DialogResult dr = new DialogResult();
+            dlg.Filter = "Текстовый файл|*.txt";
+            dlg.Title = "Выберите текстовый файл с кодами ТН ВЭД";
+            dr = dlg.ShowDialog();
+            if (dr == System.Windows.Forms.DialogResult.OK)
+            {
+                ob.WriteInRAM(tCode, dlg.FileName, ref k, ref m);
+                Form2 f2 = new Form2();
+                f2.Owner = this;
+                f2.ShowDialog();
+                dlg.Title = "Выберите текстовый файл с кодами ТН ВЭД, для которых НДС равно 10%";
+                dr = dlg.ShowDialog();
+                if (dr == System.Windows.Forms.DialogResult.OK)
+                {
+                    Thread th = new Thread(() => ob.EditNDS(tCode, dlg.FileName, ref k, ref n));        //отдельный поток
+                    th.Start();
+                    Form3 f3 = new Form3();
+                    f3.Owner = this;
+                    f3.ShowDialog();
+                    //if (!th.IsAlive)
+                    //{
+                    //    th.Join();
+                    //}
+                }
+            }
+            Form4 f4 = new Form4();
+            f4.Owner = this;
+            f4.ShowDialog();
+        }
 
-        //private void dataGridView1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        //{
-        //    if (dataGridView1.CurrentCellAddress.X == column.DisplayIndex)
-        //    {
-        //        ComboBox cb = e.Control as ComboBox;
-        //        if (cb != null)
-        //        {
-        //            cb.DropDownStyle = ComboBoxStyle.DropDown;
-        //        }
-        //    }
-        //}
+        public void Saver(List<Codes> code)                                               //сохранение изменений
+        {
+            BinaryWriter bw = new BinaryWriter(File.Open("C:\\db.dat", FileMode.Create));
+            code1 = code.ToList();
+            bw.Write(code1.Count);
+            foreach (Codes c1 in code1)
+            {
+                bw.Write(c1.id);
+                bw.Write(c1.number.Length);
+                bw.Write(c1.number);
+                bw.Write(c1.description.Length);
+                bw.Write(c1.description);
+                bw.Write(c1.unit.Length);
+                bw.Write(c1.unit);
+                bw.Write(c1.tax.Length);
+                bw.Write(c1.tax);
+                bw.Write(c1.cost);
+                bw.Write(c1.amount);
+                bw.Write(c1.tax1);
+                bw.Write(c1.type);
+                bw.Write(c1.tax2);
+                bw.Write(c1.currency.Length);
+                bw.Write(c1.currency);
+                bw.Write(c1.tax3);
+                bw.Write(c1.unit2.Length);
+                bw.Write(c1.unit2);
+                bw.Write(c1.nds);
+            }
+            bw.Write(code1[0].description);
+            labelHelp.Text = (code1.Count() < 10000) ? "Обновите базу данных" : "";       //подсказка (краткая форма if)
+            code.Clear();
+        }
 
-        //private void dataGridView1_keyPress(object sender, KeyPressEventArgs e)
+        private void OpenFromFile()
+        {
+            using (var br = new BinaryReader(File.Open("C:\\db.dat", FileMode.Open, FileAccess.Read)))
+            {
+                int amount = 0;
+                int counts = br.ReadInt32();
+
+                for (int i = 0; i < counts; i++)
+                {
+                    code1.Add(new Codes());
+                    code1[i].id = br.ReadInt32();
+                    amount = br.ReadInt32();
+                    code1[i].number = br.ReadString();
+                    amount = br.ReadInt32();
+                    code1[i].description = br.ReadString();
+                    amount = br.ReadInt32();
+                    code1[i].unit = br.ReadString();
+                    amount = br.ReadInt32();
+                    code1[i].tax = br.ReadString();
+                    code1[i].cost = br.ReadDouble();
+                    code1[i].amount = br.ReadDouble();
+                    code1[i].tax1 = br.ReadDouble();
+                    code1[i].type = br.ReadByte();
+                    code1[i].tax2 = br.ReadDouble();
+                    amount = br.ReadInt32();
+                    code1[i].currency = br.ReadString();
+                    code1[i].tax3 = br.ReadInt32();
+                    amount = br.ReadInt32();
+                    code1[i].unit2 = br.ReadString();
+                    code1[i].nds = br.ReadDouble();
+                }
+            }
+        }
+
+        //public List<Codes> Upd1()                                                       //обновление кодов
         //{
-        //    if (dataGridView1.CurrentCell.Value.ToString() != "6")
-        //    {
-        //        MessageBox.Show("Вправьте!");
-        //    }
+
+        //}
+        //public List<Codes> Upd2()                                                       //обновление исключений с НДС 10%
+        //{
+
         //}
     }
 
-
     public class ReadFromFile
     {
-        public List<Codes> WriteInRAM()
+        public List<Codes> WriteInRAM(List<Codes> code, string dir1, ref int n, ref int m)
         {
-            string[] lines = System.IO.File.ReadAllLines(@"D:\Development\CODES\codes_all.txt");
+            string[] lines = System.IO.File.ReadAllLines(dir1);
+            m = lines.Count();
             string temp = "", temp2 = "", temp3 = "", temp4 = "";
             char[] symbol = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
             char[] array;
             char[] probel = {' '};
             int i = 0;
             int isLet = 0, isDig = 0;
-            int noDig = 0;
-            
-
-            StreamWriter sw = new StreamWriter(@"D:\Development\CODES\log.txt",false);
-
-            List<Codes> code = new List<Codes>();
+            n = 0;
+            code.Clear();
+            //StreamWriter sw = new StreamWriter(@"D:\Development\CODES\log.txt",false);
+            //List<Codes> code = new List<Codes>();
             Codes obj2 = new Codes();
 
             foreach (string line in lines)
             {
+                n++;
                 string tempRegex = "";
                 if (line.Length > 74)
                 {
@@ -359,13 +426,11 @@ namespace TNVED
                                 obj2.type = 8;
                                 break;
                         }
-                        //sw.WriteLine(tempType);
                         obj2.tax2 = Double.Parse(Regex.Replace(Regex.Match(obj2.tax, @"[0-9,]{1,}\s(евро|евр|доллар|за)").Value, @"[,]?\s(евро|евр|доллар|за)", ""));
                         obj2.currency = Regex.Replace(Regex.Match(obj2.tax, @"\b(евро|евр|доллар)").Value, @"(евр)\b", "евро");
                         obj2.tax3 = int.Parse(Regex.Replace(Regex.Match(obj2.tax, @"\s\d+\s(кг|шт|л|м2|м3|см2|см3|пару|т)").Value, @"(кг|шт|л|м2|м3|см2|см3|пару|т)", ""));
                         obj2.unit2 = Regex.Match(obj2.tax, @"\s(кг|шт|л|м2|м3|см2|см3|пару|т)").Value;
                         code.Add(obj2);
-                        sw.WriteLine(obj2.tax);
                         isLet = 0;
                         i++;
                     }
@@ -378,7 +443,6 @@ namespace TNVED
                         obj.description = Regex.Replace(temp2, @"\s+", " ");
                         if (Regex.IsMatch(obj.description, @"\b([И|и]сключен)[. ]"))    //пропуск исключённых кодов
                         {
-                            //sw.WriteLine(obj.description);
                             continue;
                         }
                         temp3 = line.Substring(50, 7);
@@ -396,7 +460,8 @@ namespace TNVED
                         {
                             continue;
                         }
-                        obj.tax = Regex.Replace(temp4, @"\s+", " ");                                         
+                        obj.tax = Regex.Replace(temp4, @"\s+", " ");
+                        obj.nds = 18;                
                         obj2 = obj;
                         if (isLet <= 1)                             //если поле "Пошлина" без букв 
                         {
@@ -407,7 +472,27 @@ namespace TNVED
                     }
                 }
             }
-            sw.Close();
+            //sw.Close();
+            return code;
+        }
+        public List<Codes> EditNDS(List<Codes> code, string dir2, ref int k, ref int n)
+        {
+            k = 0;
+            n = 0;
+            string[] excep = System.IO.File.ReadAllLines(dir2);
+            foreach (Codes l in code)
+            {
+                n++;
+                foreach (string exc in excep)               //определение НДС из файла исключений
+                {
+                    if (Regex.IsMatch(l.number, @"\b" + exc + @"\d*"))
+                    {
+                        l.nds = 10;
+                        k++;
+                        break;
+                    }
+                } 
+            }
             return code;
         }
     }
@@ -434,7 +519,9 @@ namespace TNVED
         public double tax2 { get; set; }                            //второе число
         public string currency { get; set; }                        //валюта
         public int tax3 { get; set; }                               //третье число
-        public string unit2 { get; set; }                           //Дополнительные ед.изм.
+        public string unit2 { get; set; }                           //дополнительные ед.изм.
+        [System.ComponentModel.DisplayName("НДС,%")]
+        public double nds { get; set; }                             //НДС
 
 
 
@@ -446,6 +533,9 @@ namespace TNVED
             unit = "";
             tax = "0";
             cost = 0;
+            currency = "";
+            unit2 = "";
+            nds = 0;
         }
 
         public void Copy (Codes o)
@@ -460,7 +550,7 @@ namespace TNVED
             type = o.type;
             currency = o.currency;
             unit2 = o.unit2;
-
+            nds = o.nds;
         }
     }
 }

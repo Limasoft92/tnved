@@ -14,12 +14,13 @@ D:\Dimon\IDE\projects\TNVED\TNVED\bin\Debug\TNVED.exe
 D:\Dimon\IDE\projects\TNVED\TNVED\bin\Debug\TNVED.pdb
 D:\Dimon\IDE\projects\TNVED\TNVED\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
 D:\Dimon\IDE\projects\TNVED\TNVED\bin\Debug\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll
-D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.Form1.resources
+D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.FormParameters.resources
+D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.MainForm.resources
+D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.FormProgresBar.resources
+D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.FormResult.resources
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.Properties.Resources.resources
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.csproj.GenerateResource.Cache
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.exe
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.pdb
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.csprojFakesResolveAssemblyReference.cache
-D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.Form2.resources
-D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.Form3.resources
-D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.Form4.resources
+D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.csproj.ResolveComReference.cache

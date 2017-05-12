@@ -2,7 +2,6 @@ D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.exe.config
 D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.exe
 D:\Development\projects\TNVED\TNVED\bin\Debug\TNVED.pdb
 D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.csprojResolveAssemblyReference.cache
-D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.Form1.resources
 D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.Properties.Resources.resources
 D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.csproj.GenerateResource.Cache
 D:\Development\projects\TNVED\TNVED\obj\Debug\TNVED.exe
@@ -24,3 +23,9 @@ D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.csproj.GenerateResource.Cache
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.exe
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.pdb
 D:\Dimon\IDE\projects\TNVED\TNVED\obj\Debug\TNVED.csprojFakesResolveAssemblyReference.cache
+D:\Development\projects\tnved\TNVED\obj\Debug\TNVED.csproj.ResolveComReference.cache
+D:\Development\projects\tnved\TNVED\bin\Debug\Codes.exe.config
+D:\Development\projects\tnved\TNVED\obj\Debug\TNVED.FormParameters.resources
+D:\Development\projects\tnved\TNVED\obj\Debug\TNVED.MainForm.resources
+D:\Development\projects\tnved\TNVED\obj\Debug\TNVED.FormProgresBar.resources
+D:\Development\projects\tnved\TNVED\obj\Debug\TNVED.FormResult.resources

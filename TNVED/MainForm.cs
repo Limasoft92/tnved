@@ -51,7 +51,7 @@ namespace TNVED
             }
             catch (System.FormatException)
             {
-                MessageBox.Show("Ввод букв не допускается! Пожалуйста, исправьте!", "Недопустимые символы", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                MessageBox.Show("Введены недопустимые символы. Пожалуйста, исправьте!", "Недопустимые символы", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
 
             if (dataGridView1[eCol, eRow].Value != null)
@@ -139,7 +139,6 @@ namespace TNVED
             taxSum = 0;
             taxCostSum = 0;
             taxCostNdsSum = 0;
-
             foreach (Codes c2 in code2)
             {
                 taxCost = 0;
@@ -243,30 +242,38 @@ namespace TNVED
             code2.Add(new Codes());
             source.ResetBindings(false);
             dataGridView1.AllowUserToAddRows = false;
-
+                        
             dataGridView1.Columns[0].ReadOnly = true;
             dataGridView1.Columns[0].Width = 40;
+            dataGridView1.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[0].DefaultCellStyle.BackColor = Color.Gainsboro;
 
-            dataGridView1.Columns[1].Width = 100;
+            dataGridView1.Columns[1].Width = 80;
+            dataGridView1.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[1]).MaxInputLength = 10;
 
             dataGridView1.Columns[2].ReadOnly = true;
-            dataGridView1.Columns[2].Width = 475;
+            dataGridView1.Columns[2].MinimumWidth = 200;
+            dataGridView1.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dataGridView1.Columns[2].DefaultCellStyle.BackColor = Color.Gainsboro;
 
             dataGridView1.Columns[3].ReadOnly = true;
-            dataGridView1.Columns[3].Width = 60;
+            dataGridView1.Columns[3].Width = 80;
+            dataGridView1.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[3].DefaultCellStyle.BackColor = Color.Gainsboro;
 
             dataGridView1.Columns[4].ReadOnly = true;
-            dataGridView1.Columns[4].Width = 320;
+            dataGridView1.Columns[4].MinimumWidth = 90;
+            dataGridView1.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dataGridView1.Columns[4].DefaultCellStyle.BackColor = Color.Gainsboro;
 
             dataGridView1.Columns[5].Width = 100;
+            dataGridView1.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[5]).MaxInputLength = 15;
 
             dataGridView1.Columns[6].ReadOnly = true;
+            dataGridView1.Columns[6].Width = 100;
+            dataGridView1.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
             dataGridView1.Columns[6].DefaultCellStyle.BackColor = Color.Gainsboro;
             ((DataGridViewTextBoxColumn)dataGridView1.Columns[6]).MaxInputLength = 15;
 
@@ -280,6 +287,16 @@ namespace TNVED
             dataGridView1.Columns[14].Visible = false;
 
             labelHelp.Text = (code1.Count() < 10000) ? "Обновите базу данных": "";                      //подсказка (краткая форма if)
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void dataGridView1_DataError(object sender, DataGridViewDataErrorEventArgs e)           //для исключения ошибки при вводе пустого поля
@@ -313,7 +330,6 @@ namespace TNVED
                 fr.Dispose();
                 source.ResetBindings(false);
             }   
-
         }
 
         public void Saver(List<Codes> code)                                               //сохранение изменений в бинарный файл
@@ -584,7 +600,7 @@ namespace TNVED
             }
             catch (System.FormatException)
             {
-                MessageBox.Show("В файле обнаружены недопустимые символы!\nПроверьте правильность заполнения данных:\n 1-ый столбец: Код ТН ВЭД\n 2-ой столбец: Стоимость, eur\n 3-ий столбец: Количество, кг", "Недопустимые символы", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("В файле обнаружены недопустимые символы!\nПроверьте правильность заполненных данных:\n 1-ый столбец: Код ТН ВЭД\n 2-ой столбец: Стоимость, eur\n 3-ий столбец: Количество, кг", "Недопустимые символы", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
         private void Marker(List<Codes> code)                                                       //выделение ячеек с неправидльным кодом красным цветом
@@ -601,7 +617,6 @@ namespace TNVED
                     {
                         dataGridView1[1, code.Count - 1].Style.BackColor = Color.Tomato;
                     }
-                    
                 }
             }
         }
@@ -618,7 +633,6 @@ namespace TNVED
             code.Clear();
             //StreamWriter sw = new StreamWriter(@"D:\Development\CODES\log.txt",false);
             Codes obj2 = new Codes();
-
             foreach (string line in lines)
             {
                 n++;
@@ -745,121 +759,7 @@ namespace TNVED
             obj.type = 0;
             obj.unit2 = "";
         }
-
-        //public List<Codes> WriteInRAM(List<Codes> code, string dir1, ref int n, ref int m)
-        //{
-        //    string[] lines = System.IO.File.ReadAllLines(dir1);
-        //    m = lines.Count();
-        //    string temp = "", temp2 = "", temp3 = "", temp4 = "";
-        //    char[] symbol = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-        //    char[] array;
-        //    char[] probel = { ' ' };
-        //    int i = 0;
-        //    int isLet = 0, isDig = 0;
-        //    n = 0;
-        //    code.Clear();
-        //    //StreamWriter sw = new StreamWriter(@"D:\Development\CODES\log.txt",false);
-        //    Codes obj2 = new Codes();
-
-        //    foreach (string line in lines)
-        //    {
-        //        n++;
-        //        string tempRegex = "";
-        //        if (line.Length > 74)
-        //        {
-        //            Codes obj = new Codes();
-        //            isDig = 0;
-        //            temp = line.Substring(0, 15);
-        //            temp = temp.Replace(" ", string.Empty);
-        //            temp = temp.Trim('+');
-        //            temp2 = temp;
-        //            temp3 = temp;
-        //            temp4 = temp;
-        //            array = temp.ToCharArray();
-        //            tempRegex = Regex.Match(temp, @"\d{10,10}").Value;      //от 10 до 10 цифр последовательно
-        //            isDig = (tempRegex != "" ? tempRegex.Length : 0);
-        //            if (isDig != 10 && isLet >= 2 && isLet <= 4)
-        //            {
-        //                obj2.tax += line.Substring(57, 18);
-        //                obj2.tax = Regex.Replace(obj2.tax, @"\s+", " ");
-        //                isLet++;
-        //                continue;
-        //            }
-        //            if (isDig == 10 && isLet >= 2)
-        //            {
-        //                string tempType = "";
-        //                obj2.tax = Regex.Match(obj2.tax, @"[0-9]{1,}[^&]{1,}\b(кг|шт|л|м2|м3|см2|см3|пару|т)").Value;
-        //                obj2.tax1 = Double.Parse(Regex.Replace(Regex.Match(obj2.tax, @"[^а-я|А-Я|\s]{1,}").Value, @"[,]$", ""));
-        //                tempType = Regex.Match(obj2.tax, @"(но не мене|плюс|евро за|евр за|доллар)").Value;
-        //                switch (tempType)
-        //                {
-        //                    case ("но не мене"):
-        //                        obj2.type = 1;
-        //                        break;
-        //                    case ("евро за"):
-        //                        obj2.type = 2;
-        //                        break;
-        //                    case ("евр за"):
-        //                        obj2.type = 2;
-        //                        break;
-        //                    case ("доллар"):
-        //                        obj2.type = 4;
-        //                        break;
-        //                    case ("плюс"):
-        //                        obj2.type = 8;
-        //                        break;
-        //                }
-        //                obj2.tax2 = Double.Parse(Regex.Replace(Regex.Match(obj2.tax, @"[0-9,]{1,}\s(евро|евр|доллар|за)").Value, @"[,]?\s(евро|евр|доллар|за)", ""));
-        //                obj2.currency = Regex.Replace(Regex.Match(obj2.tax, @"\b(евро|евр|доллар)").Value, @"(евр)\b", "евро");
-        //                obj2.tax3 = int.Parse(Regex.Replace(Regex.Match(obj2.tax, @"\s\d+\s(кг|шт|л|м2|м3|см2|см3|пару|т)").Value, @"(кг|шт|л|м2|м3|см2|см3|пару|т)", ""));
-        //                obj2.unit2 = Regex.Match(obj2.tax, @"\s(кг|шт|л|м2|м3|см2|см3|пару|т)").Value;
-        //                code.Add(obj2);
-        //                isLet = 0;
-        //                i++;
-        //            }
-        //            if (isDig == 10)                                //если обнаружен 10-значный код
-        //            {
-        //                isLet = 0;
-        //                obj.id = i;
-        //                obj.number = temp;
-        //                temp2 = line.Substring(16, 32);
-        //                obj.description = Regex.Replace(temp2, @"\s+", " ");
-        //                if (Regex.IsMatch(obj.description, @"\b([И|и]сключен)[. ]"))    //пропуск исключённых кодов
-        //                {
-        //                    continue;
-        //                }
-        //                temp3 = line.Substring(50, 7);
-        //                obj.unit = Regex.Replace(temp3, @"\s+", " ");
-        //                temp4 = line.Substring(57, 18);
-        //                array = temp4.ToCharArray();
-        //                if (Regex.IsMatch(temp4, @"[0-9]{1,}"))
-        //                {
-        //                    if (Regex.IsMatch(temp4, @"[а-я|А-Я]{2,}"))
-        //                    {
-        //                        isLet = 2;
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    continue;
-        //                }
-        //                obj.tax = Regex.Replace(temp4, @"\s+", " ");
-        //                //obj.nds = 18;
-        //                obj2 = obj;
-        //                if (isLet <= 1)                                                  //если поле "Пошлина" без букв 
-        //                {
-        //                    obj.tax1 = Double.Parse(Regex.Match(obj.tax, @"(\d+[,]\d+)|\d+").Value);
-        //                    code.Add(obj);
-        //                    i++;
-        //                }
-        //            }
-        //        }
-        //    }
-        //    //sw.Close();
-        //    return code;
-        //}
     }
-
 
     public class Codes
     {
@@ -885,9 +785,7 @@ namespace TNVED
         public string unit2 { get; set; }                           //дополнительные ед.изм.
         [System.ComponentModel.DisplayName("НДС,%")]
         public double nds { get; set; }                             //НДС
-
         public bool unCor { get; set; }                             //код не содержится в базе
-
 
         public Codes() 
         {

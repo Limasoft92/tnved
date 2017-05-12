@@ -128,7 +128,13 @@
             this.Controls.Add(this.groupBoxParameters);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonSave);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(300, 220);
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(300, 220);
             this.Name = "FormParameters";
+            this.ShowIcon = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Параметры";
             this.Load += new System.EventHandler(this.FormParameters_Load);

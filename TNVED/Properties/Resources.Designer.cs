@@ -59,5 +59,35 @@ namespace TNVED.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap customsDuty {
+            get {
+                object obj = ResourceManager.GetObject("customsDuty", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap whiteTruck {
+            get {
+                object obj = ResourceManager.GetObject("whiteTruck", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap whiteTruck1 {
+            get {
+                object obj = ResourceManager.GetObject("whiteTruck1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
